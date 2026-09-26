@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "postgresql://postgres:dataforge@localhost:5432/dataforge"
+    database_url: str = "postgresql+psycopg://postgres:dataforge@localhost:5432/dataforge"
     insight_url: str = "http://localhost:8001"
 
 
