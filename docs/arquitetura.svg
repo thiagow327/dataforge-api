@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="640" viewBox="0 0 820 640" font-family="Segoe UI, Arial, sans-serif">
+  <!-- fundo branco para legibilidade em tema claro e escuro -->
+  <rect width="820" height="640" fill="#ffffff"/>
+  <text x="410" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">DataForge — Arquitetura (Cenário 2.1)</text>
+
+  <!-- Cliente -->
+  <rect x="300" y="64" width="220" height="46" rx="8" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="410" y="92" text-anchor="middle" font-size="15" fill="#0f172a">Cliente / Swagger UI</text>
+
+  <!-- seta cliente -> api -->
+  <line x1="410" y1="110" x2="410" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="424" y="134" font-size="12" fill="#475569">HTTP</text>
+
+  <!-- API principal -->
+  <rect x="250" y="150" width="320" height="96" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="410" y="176" text-anchor="middle" font-size="16" font-weight="700" fill="#1e3a8a">dataforge-api (principal)</text>
+  <text x="410" y="198" text-anchor="middle" font-size="12.5" fill="#1e3a8a">CRUD /datasets · proxy · persistência</text>
+  <text x="410" y="216" text-anchor="middle" font-size="12.5" fill="#1e3a8a">POST · GET · PUT · DELETE</text>
+  <text x="410" y="234" text-anchor="middle" font-size="12.5" fill="#1e3a8a">FastAPI</text>
+
+  <!-- PostgreSQL -->
+  <rect x="620" y="166" width="150" height="64" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="695" y="194" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">PostgreSQL</text>
+  <text x="695" y="214" text-anchor="middle" font-size="12" fill="#5b21b6">persistência</text>
+  <line x1="570" y1="198" x2="620" y2="198" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrowv)"/>
+
+  <!-- seta api -> insight -->
+  <line x1="410" y1="246" x2="410" y2="300" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="424" y="278" font-size="12" fill="#475569">REST /analysis</text>
+
+  <!-- Insight service -->
+  <rect x="230" y="300" width="360" height="110" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="410" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">dataforge-insight-service (secundária)</text>
+  <text x="410" y="348" text-anchor="middle" font-size="12.5" fill="#166534">validação · anomalias · estatística</text>
+  <text x="410" y="366" text-anchor="middle" font-size="12.5" fill="#166534">enriquecimento · interpretação por IA</text>
+  <text x="410" y="390" text-anchor="middle" font-size="12.5" fill="#166534">POST /analysis · GET /analysis/{id}[/statistics] · GET /enrich/{cep}</text>
+
+  <!-- seta insight -> brasilapi -->
+  <line x1="320" y1="410" x2="220" y2="470" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="196" y="452" font-size="12" fill="#475569">REST (CEP)</text>
+
+  <!-- seta insight -> ollama -->
+  <line x1="500" y1="410" x2="600" y2="470" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="556" y="452" font-size="12" fill="#475569">REST (prompt)</text>
+
+  <!-- BrasilAPI -->
+  <rect x="90" y="470" width="230" height="70" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+  <text x="205" y="500" text-anchor="middle" font-size="15" font-weight="700" fill="#854d0e">BrasilAPI (externa)</text>
+  <text x="205" y="522" text-anchor="middle" font-size="12" fill="#854d0e">CEP → cidade / estado</text>
+
+  <!-- Ollama -->
+  <rect x="500" y="470" width="230" height="70" rx="10" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+  <text x="615" y="500" text-anchor="middle" font-size="15" font-weight="700" fill="#9f1239">Ollama (IA local)</text>
+  <text x="615" y="522" text-anchor="middle" font-size="12" fill="#9f1239">llama3.2:3b · resumo em PT-BR</text>
+
+  <!-- legenda -->
+  <text x="410" y="588" text-anchor="middle" font-size="12.5" fill="#334155">Módulos desenvolvidos: dataforge-api e dataforge-insight-service (repositórios separados, cada um com Dockerfile).</text>
+  <text x="410" y="608" text-anchor="middle" font-size="12.5" fill="#334155">Componentes externos: BrasilAPI (serviço público) e Ollama (IA self-hosted).</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+</svg>

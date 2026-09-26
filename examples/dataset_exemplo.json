@@ -1,0 +1,11 @@
+{
+  "name": "Vendas Março 2026",
+  "description": "Amostra com problemas de qualidade para demonstrar o pipeline (CEP ausente, valor negativo, duplicata)",
+  "records": [
+    {"data": "2026-03-01", "produto": "Notebook", "cep": "01310-100", "valor": 3299},
+    {"data": "2026-03-02", "produto": "Mouse", "cep": "20040-002", "valor": 49},
+    {"data": "2026-03-02", "produto": "Notebook", "cep": null, "valor": 3299},
+    {"data": "2026-03-03", "produto": "Teclado", "cep": "00000-000", "valor": -150},
+    {"data": "2026-03-01", "produto": "Notebook", "cep": "01310-100", "valor": 3299}
+  ]
+}
