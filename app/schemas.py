@@ -47,3 +47,12 @@ class DatasetList(BaseModel):
     skip: int
     limit: int
     items: list[DatasetOut]
+
+
+# ---------- Insights ----------
+class InsightOut(BaseModel):
+    dataset_id: int
+    analysis_id: int
+    created_at: datetime
+    result: dict
+    model_config = ConfigDict(from_attributes=True)

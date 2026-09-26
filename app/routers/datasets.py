@@ -1,9 +1,11 @@
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.database import get_db
+from app.services.insight_client import request_analysis
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
 
@@ -92,3 +94,59 @@ def list_records(
         .limit(limit)
     )
     return db.scalars(stmt).all()
+
+
+@router.post("/{dataset_id}/analyze", response_model=schemas.InsightOut)
+def analyze_dataset(dataset_id: int, db: Session = Depends(get_db)):
+    """Proxy: envia os registros ao insight-service e persiste o resultado."""
+    dataset = _get_or_404(db, dataset_id)
+    records = [
+        {
+            "data": r.data.isoformat() if r.data else None,
+            "produto": r.produto,
+            "cep": r.cep,
+            "valor": r.valor,
+        }
+        for r in dataset.records
+    ]
+    try:
+        result = request_analysis(dataset_id, records)
+    except httpx.HTTPError as exc:
+        raise HTTPException(
+            status.HTTP_502_BAD_GATEWAY, f"insight-service indisponível: {exc}"
+        )
+
+    analysis = models.AnalysisResult(dataset_id=dataset_id, payload=result)
+    db.add(analysis)
+    db.commit()
+    db.refresh(analysis)
+    return {
+        "dataset_id": dataset_id,
+        "analysis_id": analysis.id,
+        "created_at": analysis.created_at,
+        "result": result,
+    }
+
+
+@router.get("/{dataset_id}/insights", response_model=schemas.InsightOut)
+def get_insights(dataset_id: int, db: Session = Depends(get_db)):
+    """Retorna a análise mais recente persistida para o dataset."""
+    _get_or_404(db, dataset_id)
+    stmt = (
+        select(models.AnalysisResult)
+        .where(models.AnalysisResult.dataset_id == dataset_id)
+        .order_by(models.AnalysisResult.created_at.desc())
+        .limit(1)
+    )
+    analysis = db.scalars(stmt).first()
+    if analysis is None:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            "Nenhuma análise para este dataset. Rode POST /datasets/{id}/analyze primeiro.",
+        )
+    return {
+        "dataset_id": dataset_id,
+        "analysis_id": analysis.id,
+        "created_at": analysis.created_at,
+        "result": analysis.payload,
+    }
