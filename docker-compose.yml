@@ -1,0 +1,59 @@
+# Orquestra os 4 serviços do DataForge.
+# Requer que os dois repositórios estejam clonados lado a lado:
+#   pasta-mae/
+#   ├── dataforge-api/                (este repo)
+#   └── dataforge-insight-service/
+#
+# Subir só a infraestrutura (Fase 0):  docker compose up -d postgres ollama
+# Subir tudo:                          docker compose up --build
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: dataforge
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dataforge
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+  insight-service:
+    build: ../dataforge-insight-service
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b   # troque para gemma2:2b quando quiser
+    ports:
+      - "8001:8000"
+    depends_on:
+      - ollama
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:dataforge@postgres:5432/dataforge
+      INSIGHT_URL: http://insight-service:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      insight-service:
+        condition: service_started
+
+volumes:
+  pgdata:
+  ollama:
